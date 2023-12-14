@@ -1,0 +1,64 @@
+﻿@model CreateProductVm 
+<div class="container">
+<form method="post" enctype="multipart/form-data">
+
+  <div class="mb-3 col-md-3">
+	<label asp-for="Name">Name</label>
+	<input asp-for="Name" class="form-control">
+	<span asp-validation-for="Name"></span>
+  </div>
+
+	<div class="mb-3 col-md-3">
+	<label asp-for="Price">Price</label>
+	<input asp-for="Price" class="form-control">
+	<span asp-validation-for="Price"></span>
+
+  </div>
+
+	<div class="mb-3 col-md-3">
+	<label asp-for="Description">Description</label>
+	<textarea asp-for="Description" class="form-control" rows="4"></textarea>
+	<span asp-validation-for="Description"></span>
+  </div>
+
+	<div class="mb-3 col-md-3">
+	<label asp-for="CategoryId">Category</label>
+	<select class="form-select" asp-for="CategoryId"
+	asp-items="new SelectList(ViewBag.Categories,nameof(Category.Id),nameof(Category.Name))">
+	<option selected>Open this select menu</option>
+    </select>
+	<span asp-validation-for="CategoryId"></span>
+    </div>
+
+    <div class="mb-3 col-md-3">
+	<label asp-for="MaterialIds">Material</label>
+	<select class="form-select" asp-for="MaterialIds"
+	asp-items="new SelectList(ViewBag.Materials,nameof(Material.Id),nameof(Material.Name))">
+	</select>
+	<span asp-validation-for="MaterialIds"></span>
+  </div>
+
+  <div class="mb-3 col-md-3">
+	<label asp-for="SizeIds">Size</label>
+	<select class="form-select" asp-for="SizeIds"
+	asp-items="new SelectList(ViewBag.Sizes,nameof(Size.Id),nameof(Size.Name))">
+	</select>
+	<span asp-validation-for="SizeIds"></span>
+  </div>
+
+  <div class="mb-3 col-md-3">
+	<label asp-for="ColorIds">Color</label>
+	<select class="form-select" asp-for="ColorIds"
+	asp-items="new SelectList(ViewBag.Colors,nameof(Color.Id),nameof(Color.Name))">
+	</select>
+	<span asp-validation-for="ColorIds"></span>
+  </div>
+
+
+ @*  <div class="mb-3">
+  <label asp-for="formFile" class="form-label">Image</label>
+  <input asp-for="formFile" class="form-control" >
+</div> *@
+  <button asp-action="Create" type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>

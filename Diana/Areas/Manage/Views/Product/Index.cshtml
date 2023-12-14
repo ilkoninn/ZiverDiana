@@ -1,0 +1,53 @@
+﻿@model List<Product>
+@{
+    int count=1;
+}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Basic Table</h4>
+                  <p class="card-description">
+                    Add class <code>.table</code>
+                  </p>
+                  <a asp-action="Create" asp-controller="Product" type="submit" class="btn btn-primary">Create</a>
+                  
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Product</th>
+                          <th>Price</th>
+                          <th>Image</th>
+                     
+                        </tr>
+                      </thead>
+                      <tbody>
+                          @foreach (var item in Model)
+                                    {
+                                        
+                        <tr>
+                          <td>@(count++)</td>
+                          <td>@item.Name</td>
+                          <td>@item.Price</td>
+                          <td>@item.Images.FirstOrDefault()?.ImgUrl</td>
+                                  <td><a asp-action="Update" asp-controller="Product" asp-route-id="@item.Id" type="submit" class="btn btn-primary">Update</a>
+                               <a asp-action="Delete" asp-controller="Product" asp-route-id="@item.Id" type="submit" class="btn btn-danger">Delete</a></td>
+                        </tr>
+                                    }
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+        
+            </div>
+          </div>
+      
+        <!-- content-wrapper ends -->

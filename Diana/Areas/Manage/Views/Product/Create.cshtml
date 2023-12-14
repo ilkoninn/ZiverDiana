@@ -35,7 +35,7 @@
 	<select class="form-select" asp-for="MaterialIds"
 	asp-items="new SelectList(ViewBag.Materials,nameof(Material.Id),nameof(Material.Name))">
 	</select>
-	<span asp-validation-for="MaterialIds"></span>
+			<span asp-validation-for="MaterialIds" style="color:red"></span>
   </div>
 
   <div class="mb-3 col-md-3">
@@ -43,7 +43,7 @@
 	<select class="form-select" asp-for="SizeIds"
 	asp-items="new SelectList(ViewBag.Sizes,nameof(Size.Id),nameof(Size.Name))">
 	</select>
-	<span asp-validation-for="SizeIds"></span>
+			<span asp-validation-for="SizeIds" style="color:red"></span>
   </div>
 
   <div class="mb-3 col-md-3">
@@ -51,14 +51,15 @@
 	<select class="form-select" asp-for="ColorIds"
 	asp-items="new SelectList(ViewBag.Colors,nameof(Color.Id),nameof(Color.Name))">
 	</select>
-	<span asp-validation-for="ColorIds"></span>
+	<span asp-validation-for="ColorIds" style="color:red"></span>
   </div>
 
 
- @*  <div class="mb-3">
-  <label asp-for="formFile" class="form-label">Image</label>
-  <input asp-for="formFile" class="form-control" >
-</div> *@
+   <div class="mb-3">
+		<label asp-for="Photos" class="form-label">Images</label>
+		<input asp-for="Photos" class="form-control">
+	<span asp-validation-for="Photos" style="color:red"></span>
+</div> 
   <button asp-action="Create" type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>

@@ -1,5 +1,6 @@
 ﻿using Diana.Areas.Manage.ViewModels;
 using Diana.DAL;
+using Diana.Helpers;
 using Diana.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace Diana.Areas.Manage.Controllers
 
 
         AppDbContext _db;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(AppDbContext db)
+        public ProductController(AppDbContext db, IWebHostEnvironment env)
         {
             _db = db;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -27,7 +30,7 @@ namespace Diana.Areas.Manage.Controllers
                 ThenInclude(p => p.Material).
                 Include(p => p.ProductSizes).
                 ThenInclude(p => p.Size).
-                 Include(p => p.ProductColors).
+                Include(p => p.ProductColors).
                 Include(p => p.Category).
                 ToList();
             return View(products);
@@ -59,14 +62,15 @@ namespace Diana.Areas.Manage.Controllers
                 Price = productVm.Price,
                 Description = productVm.Description,
                 CategoryId = productVm.CategoryId,
-                ProductSizes = new List<ProductSize>()
+                ProductSizes = new List<ProductSize>(),
+                Images = new List<Image>()
             };
 
             foreach (var item in productVm.SizeIds)
             {
                 ProductSize productSize = new ProductSize()
                 {
-                    Product=product,
+                    Product = product,
                     SizeId = item
                 };
                 _db.ProductSizes.Add(productSize);
@@ -84,13 +88,37 @@ namespace Diana.Areas.Manage.Controllers
 
             foreach (var item in productVm.MaterialIds)
             {
-                ProductMaterial  productMaterial = new ProductMaterial()
+                ProductMaterial productMaterial = new ProductMaterial()
                 {
                     Product = product,
                     MaterialId = item
                 };
                 _db.ProductMaterials.Add(productMaterial);
             }
+
+            foreach (var item in productVm.Photos)
+            {
+                if (!item.CheckType("image/"))
+                {
+                    ModelState.AddModelError("Photos", "Enter right format");
+                    continue;
+                }
+                if (!item.CheckLength(3000))
+                {
+                    ModelState.AddModelError("Photos", "Maxsimum 3mb photo can be added");
+                    continue;
+                }
+
+
+                Image image = new Image()
+                {
+                    ImgUrl = item.Upload(_env.WebRootPath, @"\Upload\Product\"),
+                    Product = product,
+                };
+
+                _db.Images.Add(image);
+            }
+
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -113,13 +141,14 @@ namespace Diana.Areas.Manage.Controllers
 
             UpdateProductVm productVm = new UpdateProductVm()
             {
-                Name=updated.Name,
-                Price=updated.Price,
-                Description=updated.Description,
-                SizeIds= new List<int>(),
-                ColorIds= new List<int>(),
-                MaterialIds= new List<int>(),
-                CategoryId=updated.CategoryId
+                Name = updated.Name,
+                Price = updated.Price,
+                Description = updated.Description,
+                SizeIds = new List<int>(),
+                ColorIds = new List<int>(),
+                MaterialIds = new List<int>(),
+                CategoryId = updated.CategoryId,
+                Images = new List<ImageVm>()
             };
 
             foreach (var item in updated.ProductSizes)
@@ -133,6 +162,15 @@ namespace Diana.Areas.Manage.Controllers
             foreach (var item in updated.ProductColors)
             {
                 productVm.ColorIds.Add(item.ColorId);
+            }
+
+            foreach (var item in updated.Images)
+            {
+                ImageVm imageVm = new ImageVm()
+                {
+                    ImgUrl = item.ImgUrl,
+                };
+                productVm.Images.Add(imageVm);
             }
             return View(productVm);
         }
@@ -160,17 +198,17 @@ namespace Diana.Areas.Manage.Controllers
                 Include(p => p.ProductColors).
                 Include(p => p.Category).Where(p => p.Id == productVm.Id).FirstOrDefault();
 
-            old.Name= productVm.Name;
-            old.Description= productVm.Description;
+            old.Name = productVm.Name;
+            old.Description = productVm.Description;
             old.Price = productVm.Price;
-            old.CategoryId= productVm.CategoryId;
-            old.ProductColors = null;  
+            old.CategoryId = productVm.CategoryId;
+            old.ProductColors = null;
             foreach (var item in productVm.ColorIds)
             {
                 ProductColor productColor = new ProductColor()
                 {
-                    Product=old,
-                    ColorId=item
+                    Product = old,
+                    ColorId = item
                 };
                 _db.ProductColors.Add(productColor);
             }
@@ -194,6 +232,16 @@ namespace Diana.Areas.Manage.Controllers
                 };
                 _db.ProductSizes.Add(productSize);
             }
+            old.Images = null;
+            foreach (var item in productVm.Photos)
+            {
+                Image image = new Image()
+                {
+                    ImgUrl = item.Upload(_env.WebRootPath, @"\Upload\Product")
+                };
+                old.Images.Add(image);
+            }
+
             _db.SaveChanges();
             return RedirectToAction("Index");
         }

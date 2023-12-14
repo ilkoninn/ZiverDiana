@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Manage\Models\**" />
+    <Compile Remove="ViewModels\**" />
+    <Content Remove="Areas\Manage\Models\**" />
+    <Content Remove="ViewModels\**" />
+    <EmbeddedResource Remove="Areas\Manage\Models\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="Areas\Manage\Models\**" />
+    <None Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.25" />
@@ -18,8 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Manage\Models\" />
-    <Folder Include="ViewModels\" />
+    <Folder Include="wwwroot\Upload\Product\" />
   </ItemGroup>
 
 </Project>
